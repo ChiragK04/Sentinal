@@ -4,9 +4,10 @@ import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { getAssistantById, createThread, createChat } from '@/lib/api';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
-import { ActivitySquareIcon, CircleDotDashedIcon, EditIcon, Loader, SendHorizontalIcon, UserCircle2Icon } from 'lucide-react';
+import { CircleDotDashedIcon, EditIcon, Loader, SendHorizontalIcon, UserCircle2Icon } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import AssistantForm from './_components/UpdateCard';
 
 interface Assistant {
   astId: string;
@@ -18,7 +19,7 @@ interface Assistant {
     fileName: string;
     fileSize: number;
     fileType: string;
-  }[]; 
+  }[];
   astTools: string[];
   createdAt: string;
   updatedAt: string;
@@ -127,13 +128,13 @@ export default function AssistantDetailPage() {
             </div>
             <div className=' flex items-center justify-center gap-2'>
               <Badge>{assistant.gptModel}</Badge>
-              <div className=" bg-muted hover:bg-primary hover:text-primary-foreground cursor-pointer border-border border p-1 rounded-sm">
-                <EditIcon size={20}/>
-              </div>
+              {/* <div className=" bg-muted hover:bg-primary hover:text-primary-foreground cursor-pointer border-border border p-1 rounded-sm">
+                <EditIcon size={20} />
+              </div> */}
             </div>
           </div>
         </CardHeader>
-        <CardContent>
+        {/* <CardContent>
           <hr className='my-1' />
           <p className='text-xs text-gray-700 mb-1'>Tools Used</p>
           <div className="flex gap-2 py-1">
@@ -157,8 +158,13 @@ export default function AssistantDetailPage() {
           <p className="text-xs text-gray-500 text-right">
             <strong>Updated:</strong> {new Date(assistant.updatedAt).toLocaleString()}
           </p>
-        </CardContent>
+        </CardContent> */}
+        <hr></hr>
+        <AssistantForm onRequestSuccess={function (data: any): void {
+          throw new Error('Function not implemented.');
+        } }/>
       </Card>
+
       {/* Chat Section */}
       <div className="basis-2/5 px-6 rounded-lg">
         <Card className='w-full h-full rounded-lg flex flex-col'>
