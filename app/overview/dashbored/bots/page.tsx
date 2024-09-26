@@ -2,9 +2,19 @@
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { getAllAssistants } from '@/lib/api';
-import { UserCircle2Icon } from 'lucide-react';
+import { EllipsisVertical, UserCircle2Icon } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import Link from 'next/link';
 
 type Assistant = {
   userId: string;
@@ -58,7 +68,7 @@ export default function AssistantsPage() {
         {assistants.map((assistant) => (
           <Card
             key={assistant.astId}
-            className="hover:shadow-md transition-shadow duration-150"
+            className="hover:shadow-md transition-shadow duration-150 cursor-pointer"
             onClick={() => handleCardClick(assistant.astId)}
           >
             <CardHeader>
@@ -70,8 +80,27 @@ export default function AssistantsPage() {
                     <p className="text-xs text-gray-600 leading-none">{assistant.astId}</p>
                   </div>
                 </div>
-                <div>
+                <div className='flex items-center justify-center'>
                   <Badge>{assistant.gptModel}</Badge>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger className='outline-none'>
+                      <EllipsisVertical size={20} />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <Link
+                        href={`/overview/dashbored/chats/${assistant.astId}/${assistant.astName}`}
+                      >
+                        <DropdownMenuItem onClick={(e) => e.stopPropagation()} className=' cursor-pointer'>
+                          History
+                        </DropdownMenuItem>
+                      </Link>
+                      <DropdownMenuItem onClick={(e) => e.stopPropagation()}>Settings</DropdownMenuItem>
+                      <DropdownMenuItem onClick={(e) => e.stopPropagation()}>Team</DropdownMenuItem>
+                      <DropdownMenuItem onClick={(e) => e.stopPropagation()}>Subscription</DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
               </div>
             </CardHeader>

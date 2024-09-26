@@ -4,7 +4,7 @@ import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { getAssistantById, createThread, createChat } from '@/lib/api';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
-import { ActivitySquareIcon, CircleDotDashedIcon, Loader, SendHorizontalIcon, UserCircle2Icon } from 'lucide-react';
+import { ActivitySquareIcon, CircleDotDashedIcon, EditIcon, Loader, SendHorizontalIcon, UserCircle2Icon } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 
@@ -125,8 +125,11 @@ export default function AssistantDetailPage() {
                 <p className="text-xs text-gray-600 leading-none hover:text-muted">{assistant.astId}</p>
               </div>
             </div>
-            <div>
+            <div className=' flex items-center justify-center gap-2'>
               <Badge>{assistant.gptModel}</Badge>
+              <div className=" bg-muted hover:bg-primary hover:text-primary-foreground cursor-pointer border-border border p-1 rounded-sm">
+                <EditIcon size={20}/>
+              </div>
             </div>
           </div>
         </CardHeader>
@@ -165,8 +168,8 @@ export default function AssistantDetailPage() {
               <p className="text-base mt-0 font-medium">{assistant.astName}</p>
             </div>
           </CardHeader>
-          <CardContent className='flex-grow overflow-y-scroll p-4 bg-white'>
-            <div className="flex flex-col space-y-2">
+          <CardContent className='flex-grow overflow-y-scroll p-4 bg-white h-full'>
+            <div className="flex flex-col h-full space-y-2">
               {chatMessages.map((msg, index) => (
                 <div key={index} className={`p-2 rounded-lg ${msg.sender === 'user' ? 'bg-blue-100 self-end' : 'bg-gray-200 self-start'}`}>
                   {msg.text}

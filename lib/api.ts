@@ -174,3 +174,72 @@ export const createChat = async (astId: string, threadId: string, message: strin
     throw new Error(error.response?.data?.message || 'Failed to create chat');
   }
 };
+
+export const getThreadsByAssistantId = async (assistant_id: string) => {
+  const token = localStorage.getItem('access_token');
+  if (!token) {
+    throw new Error('Access token not found');
+  }
+
+  try {
+    const response = await api.get(`/threads/get-thread/${assistant_id}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'accept': 'application/json',
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Failed to fetch threads');
+  }
+};
+
+export const getThreadHistoryById = async (threadId: string) => {
+  const token = localStorage.getItem('access_token');
+  if (!token) {
+    throw new Error('Access token not found');
+  }
+  
+  try {
+    const response = await api.get(`/threads/get-thread-history/${threadId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'accept': 'application/json',
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Failed to fetch thread history');
+  }
+};
+
+export const updateAssistant = async (
+  astId: string,
+  astName: string,
+  astInstruction: string,
+  gptModel: string,
+  astTools: string[]
+) => {
+  const token = localStorage.getItem('access_token');
+  if (!token) {
+    throw new Error('Access token not found');
+  }
+
+  try {
+    const response = await api.put('/assistant/update-assistant', {
+      astId,
+      astName,
+      astInstruction,
+      gptModel,
+      astTools,
+    }, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Failed to update assistant');
+  }
+};

@@ -1,20 +1,23 @@
-import Dashbored from "./_components/dashbored/Dashbored";
+'use client'
+import { useState } from "react";
+import Header from "./_components/sub_header/Header";
 import Sidebar from "./_components/sidebar/Sidebar";
 
-export const metadata = {
-    title: 'Your Page Title',
-    description: 'Description of your page for SEO and accessibility',
-};
-
 const Layout = ({ children }: { children: React.ReactNode }) => {
+    const [selectedItem, setSelectedItem] = useState<string>("Dashbored");
+
+    const handleSelectItem = (item: string) => {
+        setSelectedItem(item);
+    };
+
     return (
         <div className='w-full h-full flex'>
-            <Sidebar />
+            <Sidebar onSelectItem={handleSelectItem} />
             <div className="p-4 bg-muted flex flex-col w-full">
                 <div className="h-28">
-                    <Dashbored />
+                    <Header selectedItem={selectedItem} />
                 </div>
-                <div className="bg-muted p-2 h-full">
+                <div className="bg-muted p-2 h-[calc(100%-112px)]">
                     {children}
                 </div>
             </div>

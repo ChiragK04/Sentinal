@@ -1,4 +1,3 @@
-import { ModeToggle } from '@/components/shared/Mode'
 import React from 'react'
 import {
   NavigationMenu,
@@ -8,14 +7,16 @@ import {
 } from "@/components/ui/navigation-menu"
 import Link from 'next/link'
 
-type Props = {}
+type DashboredProps = {
+  selectedItem: string;
+};
 
-const Dashbored = (props: Props) => {
+const Dashbored = ({ selectedItem }: DashboredProps) => {
   return (
     <div className="p-2 w-full h-full mb-4">
       <div className="h-full flex flex-col justify-between">
         <div className='mb-4'>
-          <h1 className=' text-3xl font-semibold'>ChatBots</h1>
+          <h1 className=' text-3xl font-semibold'>{selectedItem}</h1>
         </div>
         <div className="text-muted-foreground">
           <NavigationMenu>
