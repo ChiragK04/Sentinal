@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import { HeaderProvider } from "@/context/HeaderContext";
+import { useAuthRedirect } from "@/context/useAuthRedirect";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -12,6 +13,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  useAuthRedirect();
+
   return (
     <html lang="en">
       <body>

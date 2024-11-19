@@ -1,5 +1,5 @@
 'use client'
-import Header from "./_components/Header";
+import Header from "./_components/header/Header";
 import Sidebar from "./_components/sidebar/Sidebar";
 import { useHeaderContext } from "@/context/HeaderContext";
 
