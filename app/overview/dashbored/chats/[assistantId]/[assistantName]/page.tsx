@@ -28,6 +28,7 @@ export default function AssistantThreads(): JSX.Element {
     const handleGetThreads = async () => {
         try {
             const response = await getThreadsByAssistantId(assistantId);
+            console.log(response)
             setThreads(response.data);
         } catch (error) {
             console.error('Error fetching threads:', error);

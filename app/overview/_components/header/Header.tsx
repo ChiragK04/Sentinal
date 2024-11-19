@@ -7,6 +7,7 @@ import {
   NavigationMenuList,
 } from '@/components/ui/navigation-menu';
 import { useRouter } from 'next/navigation';
+import { useThreadContext } from '@/context/ThreadContext';
 
 type DashboredProps = {
   selectedItem: string;
@@ -15,6 +16,7 @@ type DashboredProps = {
 
 const Header = ({ selectedItem, selectedMenu }: DashboredProps) => {
   const router = useRouter();
+  const { selectedThread, threadName, setSelectedThread, setThreadName } = useThreadContext();
 
   // useEffect(() => {
   //   const paths: Record<string, string> = {
@@ -74,13 +76,18 @@ const Header = ({ selectedItem, selectedMenu }: DashboredProps) => {
         return (
           <NavigationMenuList className="flex space-x-24">
             <NavigationMenuItem className="cursor-pointer">
-              <NavigationMenuLink href="/overview/dashbored/history" className={activeClass('History')}>
-                History
+              <NavigationMenuLink href={`/overview/dashbored/monitors/${selectedThread}`} className={activeClass('Monitor')}>
+                Monitors
               </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem className="cursor-pointer">
-              <NavigationMenuLink href="/overview/dashbored/monitors" className={activeClass('Monitors')}>
-                Monitors
+              <NavigationMenuLink href={`/overview/dashbored/monitors/${selectedThread}`} className={activeClass('API')}>
+                API
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+            <NavigationMenuItem className="cursor-pointer">
+              <NavigationMenuLink href={`/overview/dashbored/chats/${selectedThread}/${threadName}`} className={activeClass('History')}>
+                History
               </NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>

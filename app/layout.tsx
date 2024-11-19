@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import { HeaderProvider } from "@/context/HeaderContext";
 import { useAuthRedirect } from "@/context/useAuthRedirect";
+import { ThreadProvider } from "@/context/ThreadContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,10 +20,12 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <HeaderProvider>
-          <TooltipProvider>
-            {children}
-          </TooltipProvider>
-          <Toaster />
+          <ThreadProvider>
+            <TooltipProvider>
+              {children}
+            </TooltipProvider>
+            <Toaster />
+          </ThreadProvider>
         </HeaderProvider>
       </body>
     </html>

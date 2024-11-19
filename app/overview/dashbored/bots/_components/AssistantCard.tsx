@@ -1,4 +1,5 @@
-'use client'
+'use client';
+
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { EllipsisVertical, UserCircle2Icon } from 'lucide-react';
@@ -9,8 +10,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu';
 import Link from 'next/link';
+import { useThreadContext } from '@/context/ThreadContext';
 
 type Assistant = {
   astId: string;
@@ -27,6 +29,14 @@ type Props = {
 };
 
 export default function AssistantCard({ assistant, onClick }: Props) {
+  const { setSelectedThread, setThreadName } = useThreadContext();
+
+  // Update the thread context values
+  const updateThread = () => {
+    setSelectedThread(assistant.astId);
+    setThreadName(assistant.astName);
+  };
+
   return (
     <Card
       key={assistant.astId}
@@ -51,13 +61,17 @@ export default function AssistantCard({ assistant, onClick }: Props) {
               <DropdownMenuContent>
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <Link
-                  href={`/overview/dashbored/chats/${assistant.astId}/${assistant.astName}`}
+                <DropdownMenuItem
+                  asChild
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    updateThread(); // Update context
+                  }}
                 >
-                  <DropdownMenuItem onClick={(e) => e.stopPropagation()} className="cursor-pointer">
+                  <Link href={`/overview/dashbored/chats/${assistant.astId}/${assistant.astName}`}>
                     History
-                  </DropdownMenuItem>
-                </Link>
+                  </Link>
+                </DropdownMenuItem>
                 <DropdownMenuItem onClick={(e) => e.stopPropagation()}>Settings</DropdownMenuItem>
                 <DropdownMenuItem onClick={(e) => e.stopPropagation()}>Team</DropdownMenuItem>
                 <DropdownMenuItem onClick={(e) => e.stopPropagation()}>Subscription</DropdownMenuItem>
@@ -71,7 +85,7 @@ export default function AssistantCard({ assistant, onClick }: Props) {
         <p className="text-xs text-gray-700 mb-1">Tools Used</p>
         <div className="flex gap-2 py-1">
           {assistant.astTools.length > 0 ? (
-            assistant.astTools.map(tool => (
+            assistant.astTools.map((tool) => (
               <p key={tool} className="text-xs text-muted-foreground bg-muted p-1 rounded-sm">
                 {tool}
               </p>
@@ -84,7 +98,7 @@ export default function AssistantCard({ assistant, onClick }: Props) {
         <p className="text-xs text-gray-700 mb-1">Docs Used</p>
         <div className="flex gap-2 py-1">
           {assistant?.astFiles?.length > 0 ? (
-            assistant.astFiles.map(file => (
+            assistant.astFiles.map((file) => (
               <p key={file} className="text-xs text-muted-foreground bg-muted p-1 rounded-sm">
                 {file}
               </p>
