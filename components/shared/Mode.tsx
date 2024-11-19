@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 export function ModeToggle() {
   const { setTheme } = useTheme()
 
-  const [mode, setMode] = React.useState<string>('light');
+  const [mode, setMode] = React.useState<string>('dark');
 
   const handleMode = () =>{
     if(mode === 'dark'){

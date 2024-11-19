@@ -19,7 +19,7 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@
 import { toast } from "sonner";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"; 
 import { createAssistant, createAssistantWithFile } from "@/lib/api";
-import DropzoneCard from "../../../create_bot/_components/Dnd";
+import DropzoneCard from "../../create_bot/_components/FileDrop";
 import { CardContent } from "@/components/ui/card";
 
 const requestSchema = z.object({

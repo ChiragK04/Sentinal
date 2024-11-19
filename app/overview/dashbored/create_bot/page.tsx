@@ -16,11 +16,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select"; 
 import { toast } from "sonner";
-import DropzoneCard from "./_components/Dnd";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { ActivitySquareIcon } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"; 
 import { createAssistant, createAssistantWithFile } from "@/lib/api";
+import FileDrop from "./_components/FileDrop";
+import { useHeaderContext } from "@/context/HeaderContext";
+import { useEffect } from "react";
 
 const requestSchema = z.object({
   astName: z.string().nonempty({ message: "Name is required" }),
@@ -35,6 +37,12 @@ interface RequestFormProps {
 }
 
 export default function RequestForm({ onRequestSuccess }: RequestFormProps) {
+  const { setSelectedItem, setSelectedMenu } = useHeaderContext();
+  useEffect(() => {
+    setSelectedItem("ChatBots"); 
+    setSelectedMenu("create_bot");
+  }, [setSelectedItem, setSelectedMenu]);
+  
   const requestForm = useForm<FieldValues>({
     resolver: zodResolver(requestSchema),
     defaultValues: {
@@ -166,7 +174,7 @@ export default function RequestForm({ onRequestSuccess }: RequestFormProps) {
               </div>
               <div className="flex-1 p-2 pr-20">
                 <FormControl>
-                  <DropzoneCard onFilesAdded={handleFilesAdded} />
+                  <FileDrop onFilesAdded={handleFilesAdded} />
                 </FormControl>
                 <FormMessage />
               </div>

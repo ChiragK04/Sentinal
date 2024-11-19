@@ -1,38 +1,31 @@
 'use client'
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { getAllAssistants } from '@/lib/api';
-import { EllipsisVertical, UserCircle2Icon } from 'lucide-react';
+
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import Link from 'next/link';
+import { getAllAssistants } from '@/lib/api';
+import AssistantList from './_components/AssistantList';
+import { useHeaderContext } from '@/context/HeaderContext';
 
 type Assistant = {
-  userId: string;
   astId: string;
   astName: string;
-  astInstruction: string;
   gptModel: string;
   astFiles: string[];
   astTools: string[];
-  createdAt: string;
   updatedAt: string;
 };
 
-export default function AssistantsPage() {
+const AssistantsPage = () => {
   const [assistants, setAssistants] = useState<Assistant[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  
+  const { setSelectedItem, setSelectedMenu } = useHeaderContext();
+  useEffect(() => {
+    setSelectedItem("ChatBots"); 
+    setSelectedMenu("Bots");
+  }, [setSelectedItem, setSelectedMenu]);
 
   const fetchAssistants = async () => {
     try {
@@ -50,7 +43,7 @@ export default function AssistantsPage() {
     fetchAssistants();
   }, []);
 
-  const handleCardClick = (astId: string) => {
+  const handleAssistantClick = (astId: string) => {
     router.push(`/overview/dashbored/thread/${astId}`);
   };
 
@@ -64,72 +57,9 @@ export default function AssistantsPage() {
 
   return (
     <div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {assistants.map((assistant) => (
-          <Card
-            key={assistant.astId}
-            className="hover:shadow-md transition-shadow duration-150 cursor-pointer"
-            onClick={() => handleCardClick(assistant.astId)}
-          >
-            <CardHeader>
-              <div className='flex justify-between'>
-                <div className="flex items-center gap-2">
-                  <UserCircle2Icon size={32} strokeWidth={1.4} className="text-primary" />
-                  <div>
-                    <h2 className="text-base font-semibold text-gray-800 leading-none">{assistant.astName}</h2>
-                    <p className="text-xs text-gray-600 leading-none">{assistant.astId}</p>
-                  </div>
-                </div>
-                <div className='flex items-center justify-center'>
-                  <Badge>{assistant.gptModel}</Badge>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger className='outline-none'>
-                      <EllipsisVertical size={20} />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                      <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <Link
-                        href={`/overview/dashbored/chats/${assistant.astId}/${assistant.astName}`}
-                      >
-                        <DropdownMenuItem onClick={(e) => e.stopPropagation()} className=' cursor-pointer'>
-                          History
-                        </DropdownMenuItem>
-                      </Link>
-                      <DropdownMenuItem onClick={(e) => e.stopPropagation()}>Settings</DropdownMenuItem>
-                      <DropdownMenuItem onClick={(e) => e.stopPropagation()}>Team</DropdownMenuItem>
-                      <DropdownMenuItem onClick={(e) => e.stopPropagation()}>Subscription</DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <hr className='my-1' />
-              <p className='text-xs text-gray-700 mb-1'>Tools Used</p>
-              <div className="flex gap-2 py-1">
-                {assistant.astTools && assistant.astTools.length > 0 ? assistant.astTools.map(tool => (
-                  <p key={tool} className="text-xs text-muted-foreground bg-muted p-1 rounded-sm">
-                    {tool}
-                  </p>
-                )) : <p className="text-xs text-muted-foreground bg-muted p-1 rounded-sm">No tools</p>}
-              </div>
-              <hr className='my-1' />
-              <p className='text-xs text-gray-700 mb-1'>Docs Used</p>
-              <div className="flex gap-2 py-1">
-                {assistant.astFiles && assistant.astFiles.length > 0 ? assistant.astFiles.map(file => (
-                  <p key={file} className="text-xs text-muted-foreground bg-muted p-1 rounded-sm">
-                    {file}
-                  </p>
-                )) : <p className="text-xs text-muted-foreground bg-muted p-1 rounded-sm">No files</p>}
-              </div>
-              <p className="text-xs text-gray-500 text-right">
-                <strong>Updated:</strong> {new Date(assistant.updatedAt).toLocaleString()}
-              </p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      <AssistantList assistants={assistants} onAssistantClick={handleAssistantClick} />
     </div>
   );
-}
+};
+
+export default AssistantsPage;

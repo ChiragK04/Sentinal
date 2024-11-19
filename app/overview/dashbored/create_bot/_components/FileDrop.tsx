@@ -2,11 +2,11 @@ import { LucideUploadCloud } from "lucide-react";
 import React from "react";
 import { useDropzone } from "react-dropzone";
 
-interface DropzoneCardProps {
+interface FileDropProps {
     onFilesAdded: (files: File[]) => void;
 }
 
-const DropzoneCard: React.FC<DropzoneCardProps> = ({ onFilesAdded }) => {
+const FileDrop: React.FC<FileDropProps> = ({ onFilesAdded }) => {
     const onDrop = (acceptedFiles: File[]) => {
         onFilesAdded(acceptedFiles);
     };
@@ -30,4 +30,4 @@ const DropzoneCard: React.FC<DropzoneCardProps> = ({ onFilesAdded }) => {
     );
 };
 
-export default DropzoneCard;
+export default FileDrop;

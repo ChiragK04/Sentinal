@@ -7,7 +7,7 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { CircleDotDashedIcon, EditIcon, Loader, SendHorizontalIcon, UserCircle2Icon } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import AssistantForm from './_components/UpdateCard';
+import AssistantForm from '../_components/UpdateCard';
 
 interface Assistant {
   astId: string;
