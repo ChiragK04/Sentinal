@@ -42,6 +42,7 @@ export default function SignInForm() {
                 });
 
                 localStorage.setItem("access_token", response.access_token);
+                localStorage.setItem("user_email", data.email);
                 localStorage.setItem("login_id", response.login_id);
                 router.push("/overview");
             } else {

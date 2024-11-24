@@ -10,7 +10,7 @@ type Thread = {
   };
   
   export const ThreadsList = ({ threads, onThreadClick }: ThreadsListProps): JSX.Element => (
-    <div>
+    <div className="h-full overflow-auto">
       {threads.length > 0 ? (
         threads.map((thread) => (
           <div

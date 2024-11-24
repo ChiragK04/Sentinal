@@ -57,7 +57,7 @@ const AssistantsPage = () => {
 
   return (
     <div>
-      <AssistantList assistants={assistants} onAssistantClick={handleAssistantClick} />
+      <AssistantList assistants={assistants} onAssistantClick={handleAssistantClick} useCase={true} />
     </div>
   );
 };

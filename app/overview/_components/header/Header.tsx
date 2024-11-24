@@ -16,41 +16,7 @@ type DashboredProps = {
 
 const Header = ({ selectedItem, selectedMenu }: DashboredProps) => {
   const router = useRouter();
-  const { selectedThread, threadName, setSelectedThread, setThreadName } = useThreadContext();
-
-  // useEffect(() => {
-  //   const paths: Record<string, string> = {
-  //     ChatBots: '/overview/dashbored/bots',
-  //     ChatBot: '/overview/dashbored/bots',
-  //     Settings: '/settings/profile',
-  //   };
-
-  //   if (selectedItem === 'ChatBots') {
-  //     router.push(
-  //       selectedMenu === 'Bots'
-  //         ? '/overview/dashbored/bots'
-  //         : selectedMenu === 'create_bot'
-  //         ? '/overview/dashbored/create_bot'
-  //         : paths.ChatBots
-  //     );
-  //   } else if (selectedItem === 'ChatBot') {
-  //     router.push(
-  //       selectedMenu === 'History'
-  //         ? '/overview/dashbored/history'
-  //         : selectedMenu === 'Monitors'
-  //         ? '/overview/dashbored/monitors'
-  //         : paths.ChatBot
-  //     );
-  //   } else if (selectedItem === 'Settings') {
-  //     router.push(
-  //       selectedMenu === 'Profile Settings'
-  //         ? '/settings/profile'
-  //         : '/settings/security'
-  //     );
-  //   } else {
-  //     router.push(paths[selectedItem] || '/overview/dashbored/bots');
-  //   }
-  // }, [selectedItem, selectedMenu, router]);
+  const { selectedThread, threadName } = useThreadContext();
 
   const activeClass = (menu: string) => selectedMenu === menu ? 'text-primary font-bold' : 'text-muted-foreground';
 
@@ -65,7 +31,7 @@ const Header = ({ selectedItem, selectedMenu }: DashboredProps) => {
               </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem className="cursor-pointer">
-              <NavigationMenuLink href="/overview/dashbored/create_bot" className={activeClass('create_bot')}>
+              <NavigationMenuLink href="/overview/dashbored/createBot" className={activeClass('create_bot')}>
                 Create New Bot
               </NavigationMenuLink>
             </NavigationMenuItem>
@@ -97,13 +63,19 @@ const Header = ({ selectedItem, selectedMenu }: DashboredProps) => {
         return (
           <NavigationMenuList className="flex space-x-24">
             <NavigationMenuItem className="cursor-pointer">
-              <NavigationMenuLink href="/settings/profile" className={activeClass('Profile Settings')}>
-                Profile Settings
+              <NavigationMenuLink href="/overview/dashbored/bots" className={activeClass('General')}>
+                General
               </NavigationMenuLink>
             </NavigationMenuItem>
+          </NavigationMenuList>
+        );
+
+      case 'Dashboard':
+        return (
+          <NavigationMenuList className="flex space-x-24">
             <NavigationMenuItem className="cursor-pointer">
-              <NavigationMenuLink href="/settings/security" className={activeClass('Security Settings')}>
-                Security Settings
+              <NavigationMenuLink href="/overview" className={activeClass('Dashboard')}>
+                Dashboard
               </NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>

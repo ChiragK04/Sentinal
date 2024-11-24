@@ -31,7 +31,6 @@ type Props = {
 export default function AssistantCard({ assistant, onClick }: Props) {
   const { setSelectedThread, setThreadName } = useThreadContext();
 
-  // Update the thread context values
   const updateThread = () => {
     setSelectedThread(assistant.astId);
     setThreadName(assistant.astName);
@@ -59,22 +58,29 @@ export default function AssistantCard({ assistant, onClick }: Props) {
                 <EllipsisVertical size={20} />
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   asChild
                   onClick={(e) => {
                     e.stopPropagation();
-                    updateThread(); // Update context
+                    updateThread(); 
                   }}
                 >
                   <Link href={`/overview/dashbored/chats/${assistant.astId}/${assistant.astName}`}>
                     History
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={(e) => e.stopPropagation()}>Settings</DropdownMenuItem>
-                <DropdownMenuItem onClick={(e) => e.stopPropagation()}>Team</DropdownMenuItem>
-                <DropdownMenuItem onClick={(e) => e.stopPropagation()}>Subscription</DropdownMenuItem>
+                <DropdownMenuItem
+                  asChild
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    updateThread(); 
+                  }}
+                >
+                  <Link href={`/overview/dashbored/monitors/${assistant.astId}`}>
+                    Monitor
+                  </Link>
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

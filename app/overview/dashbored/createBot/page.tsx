@@ -1,5 +1,5 @@
 "use client";
-
+'use client'
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler, FieldValues } from "react-hook-form";
 import { z } from "zod";
@@ -14,22 +14,22 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select"; 
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { ActivitySquareIcon } from "lucide-react";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"; 
+import { ActivitySquareIcon, FileBarChart2Icon } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";  // Importing the Checkbox component
 import { createAssistant, createAssistantWithFile } from "@/lib/api";
 import FileDrop from "./_components/FileDrop";
 import { useHeaderContext } from "@/context/HeaderContext";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const requestSchema = z.object({
   astName: z.string().nonempty({ message: "Name is required" }),
   astInstruction: z.string().nonempty({ message: "Instruction is required" }),
   gptModel: z.string().nonempty({ message: "GPT Model is required" }),
   files: z.array(z.any()).optional(),
-  astTools: z.string().nonempty({ message: "At least one tool is required" }),
+  astTools: z.array(z.string()).nonempty({ message: "At least one tool is required" }),
 });
 
 interface RequestFormProps {
@@ -39,39 +39,40 @@ interface RequestFormProps {
 export default function RequestForm({ onRequestSuccess }: RequestFormProps) {
   const { setSelectedItem, setSelectedMenu } = useHeaderContext();
   useEffect(() => {
-    setSelectedItem("ChatBots"); 
+    setSelectedItem("ChatBots");
     setSelectedMenu("create_bot");
   }, [setSelectedItem, setSelectedMenu]);
-  
+
+  const [addedFiles, setAddedFiles] = useState<File[]>([]);
+
   const requestForm = useForm<FieldValues>({
     resolver: zodResolver(requestSchema),
     defaultValues: {
       astName: "",
       astInstruction: "",
-      gptModel: "gpt-4o-mini", 
+      gptModel: "gpt-4o-mini",
       files: [],
-      astTools: "code_interpreter",
+      astTools: [],
     },
   });
 
   const handleFilesAdded = (acceptedFiles: File[]) => {
-    requestForm.setValue("files", acceptedFiles);
+    setAddedFiles((prevFiles) => [...prevFiles, ...acceptedFiles]);
+    requestForm.setValue("files", [...requestForm.getValues("files"), ...acceptedFiles]);
   };
 
   const handleRequest: SubmitHandler<FieldValues> = async (data) => {
-    console.log("Submitted Data:", data);
-    
     try {
       if (data.files && data.files.length > 0) {
-        console.log("Creating assistant with files:", data.files);
-        const result = await createAssistantWithFile(data.astName, data.astInstruction, data.gptModel, [data.astTools], data.files);
-        console.log("Assistant created with files:", result);
+        console.log("Creating assistant with files:", data);
+        const result = await createAssistantWithFile(data.astName, data.astInstruction, data.gptModel, data.astTools, data.files);
+        console.log(result)
       } else {
         console.log("Creating assistant without files");
-        const result = await createAssistant(data.astName, data.astInstruction, data.gptModel, [data.astTools]);
-        console.log("Assistant created without files:", result);
+        const result = await createAssistant(data.astName, data.astInstruction, data.gptModel, data.astTools);
+        console.log(result)
       }
-      
+
       toast.success("Success!", {
         description: "Your request has been processed successfully.",
       });
@@ -82,9 +83,9 @@ export default function RequestForm({ onRequestSuccess }: RequestFormProps) {
   };
 
   return (
-    <Card className="m-4">
+    <Card className="">
       <CardHeader className="p-4 bg-gray-100">
-        <div className="flex flex-row items-center gap-2">
+        <div className="flex flex-row items-center gap-2 rounded-lg">
           <ActivitySquareIcon strokeWidth={1.4} className="text-green-600" />
           <p className="text-base mt-0 font-medium">Active Bot Setup</p>
         </div>
@@ -92,7 +93,6 @@ export default function RequestForm({ onRequestSuccess }: RequestFormProps) {
       <CardContent className="py-6 px-12">
         <Form {...requestForm}>
           <form onSubmit={requestForm.handleSubmit(handleRequest)} className="grid gap-4">
-            {/* Name Field */}
             <FormField
               control={requestForm.control}
               name="astName"
@@ -113,7 +113,6 @@ export default function RequestForm({ onRequestSuccess }: RequestFormProps) {
             />
             <hr className="px-4" />
 
-            {/* Instructions Field */}
             <FormField
               control={requestForm.control}
               name="astInstruction"
@@ -134,7 +133,6 @@ export default function RequestForm({ onRequestSuccess }: RequestFormProps) {
             />
             <hr className="px-4" />
 
-            {/* GPT Model Field (Shadcn UI Select) */}
             <FormField
               control={requestForm.control}
               name="gptModel"
@@ -164,24 +162,38 @@ export default function RequestForm({ onRequestSuccess }: RequestFormProps) {
                 </FormItem>
               )}
             />
+
             <hr className="px-4" />
 
-            {/* Files Field */}
             <FormItem className="flex flex-row justify-between items-center">
               <div className="flex-1 p-2">
                 <FormLabel>Files</FormLabel>
                 <FormDescription>Upload any files required for this assistant.</FormDescription>
               </div>
-              <div className="flex-1 p-2 pr-20">
+              <div className="flex-1 p-2 pr-20 flex gap-4 items-center">
                 <FormControl>
                   <FileDrop onFilesAdded={handleFilesAdded} />
                 </FormControl>
+                <div className="mt-2 overflow-scroll">
+                  {addedFiles.length > 0 ? (
+                    <ul>
+                      {addedFiles.map((file, index) => (
+                        <div className="flex gap-2 mb-2" key={index}>
+                          <FileBarChart2Icon />
+                          <li key={index}>{file.name}</li>
+                        </div>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p>No files added</p>
+                  )}
+                </div>
                 <FormMessage />
               </div>
             </FormItem>
+
             <hr className="px-4" />
 
-            {/* Tools Field (Radio Group) */}
             <FormField
               control={requestForm.control}
               name="astTools"
@@ -189,23 +201,36 @@ export default function RequestForm({ onRequestSuccess }: RequestFormProps) {
                 <FormItem className="flex flex-row justify-between items-center">
                   <div className="flex-1 p-2">
                     <FormLabel>Tools</FormLabel>
-                    <FormDescription>Select one of the tools available for the assistant.</FormDescription>
+                    <FormDescription>Select one or more tools available for the assistant.</FormDescription>
                   </div>
                   <div className="flex-1 p-2 pr-20">
                     <FormControl>
-                      <RadioGroup
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
+                      <div className="space-y-2">
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="code_interpreter" />
+                          <Checkbox
+                            checked={field.value.includes("code_interpreter")}
+                            onCheckedChange={(checked) => {
+                              const newTools = checked
+                                ? [...field.value, "code_interpreter"]
+                                : field.value.filter((tool: string) => tool !== "code_interpreter");
+                              field.onChange(newTools);
+                            }}
+                          />
                           <label>Code Interpreter</label>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="file_search" />
+                          <Checkbox
+                            checked={field.value.includes("file_search")}
+                            onCheckedChange={(checked) => {
+                              const newTools = checked
+                                ? [...field.value, "file_search"]
+                                : field.value.filter((tool: string) => tool !== "file_search");
+                              field.onChange(newTools);
+                            }}
+                          />
                           <label>File Search</label>
                         </div>
-                      </RadioGroup>
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </div>
@@ -214,7 +239,6 @@ export default function RequestForm({ onRequestSuccess }: RequestFormProps) {
             />
             <hr className="px-4" />
 
-            {/* Submit Button */}
             <Button type="submit" className="mt-4 rounded-xl">
               Start Bot Setup
             </Button>

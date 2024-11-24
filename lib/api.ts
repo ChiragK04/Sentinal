@@ -33,8 +33,40 @@ export const confirmSignUp = async (email: string, confirmation_code: string) =>
   }
 };
 
+export const initiatePasswordReset = async (email: string) => {
+  try {
+    const response = await api.post('/auth/password-reset/initiate', { email });
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Failed to initiate password reset');
+  }
+};
+
+export const confirmPasswordReset = async (
+  email: string,
+  confirmationCode: string,
+  newPassword: string
+) => {
+  console.log(email, confirmationCode, newPassword)
+  try {
+    const response = await api.post('/auth/password-reset/confirm', {
+      email,
+      confirmation_code: confirmationCode,
+      new_password: newPassword,
+    });
+    console.log(response)
+    return response.data;
+  } catch (error: any) {
+    throw new Error(
+      error.response?.data?.message || 'Failed to confirm password reset'
+    );
+  }
+};
+
+
+
 export const getAllAssistants = async () => {
-  const token = localStorage.getItem('access_token'); 
+  const token = localStorage.getItem('access_token');
   if (!token) {
     throw new Error('Access token not found');
   }
@@ -53,7 +85,7 @@ export const getAllAssistants = async () => {
 
 export const getAssistantById = async (ast_id: string) => {
   console.log('Assistant Calls..')
-  const token = localStorage.getItem('access_token'); 
+  const token = localStorage.getItem('access_token');
   try {
     const response = await api.get(`/assistant/get-assistant/${ast_id}`, {
       headers: {
@@ -94,39 +126,80 @@ export const createAssistant = async (astName: string, astInstruction: string, g
 };
 
 // Create Assistant with file upload
-export const createAssistantWithFile = async (astName: string, astInstruction: string, gptModel: string, astTools: string[], files: File[]) => {
+
+export const createAssistantWithFile = async (
+  astName: string,
+  astInstruction: string,
+  gptModel: string,
+  astTools: string[],
+  files: File[]
+) => {
+  const formData = new FormData();
+  const url = `/assistant/create-assistant-with-file?astName=${encodeURIComponent(astName)}&astInstruction=${encodeURIComponent(astInstruction)}&gptModel=${encodeURIComponent(gptModel)}`;
+
   const token = localStorage.getItem('access_token');
   if (!token) {
     throw new Error('Access token not found');
   }
 
-  const formData = new FormData();
-  formData.append('astName', astName);
-  formData.append('astInstruction', astInstruction);
-  formData.append('gptModel', gptModel);
-
-  astTools.forEach((tool, index) => {
-    formData.append(`astTools[${index}]`, tool);
+  files.forEach((file) => {
+    formData.append('files', file);
   });
 
-  files.forEach((file, index) => {
-    formData.append(`files[${index}]`, file);
-  });
+  formData.append('astTools', JSON.stringify(astTools));
 
   try {
-    const response = await api.post('/assistant/create-assistant-with-file', formData, {
+    const response = await api.post(url, formData, {
       headers: {
-        'Authorization': `Bearer ${token}`,
+        'Authorization': `Bearer ${token}`, 
         'Content-Type': 'multipart/form-data',
       },
     });
+    
+
+    console.log('Assistant created successfully:', response.data);
     return response.data;
-  } catch (error: any) {
-    throw new Error(error.response?.data?.message || 'Failed to create assistant with file');
+  } catch (error) {
+    console.error('Error creating assistant:', error);
+    throw error;
   }
 };
 
-export const createThread = async ( astId: string, threadTitle: string) => {
+// export const createAssistantWithFile = async (astName: string, astInstruction: string, gptModel: string, astTools: string[], files: File[]) => {
+//   const token = localStorage.getItem('access_token');
+//   if (!token) {
+//     throw new Error('Access token not found');
+//   }
+
+//   const formData = new FormData();
+//   formData.append('astName', astName);
+//   formData.append('astInstruction', astInstruction);
+//   formData.append('gptModel', gptModel);
+
+//   astTools.forEach((tool, index) => {
+//     formData.append(`astTools[${index}]`, tool);
+//   });
+
+//   files.forEach((file, index) => {
+//     formData.append(`files[${index}]`, file);
+//   });
+//   console.log(formData);
+
+//   try {
+//     const response = await api.post('/assistant/create-assistant-with-file', formData, {
+//       headers: {
+//         'Authorization': `Bearer ${token}`,
+//         'Content-Type': 'multipart/form-data',
+//       },
+//     });
+//     return response.data;
+//   } catch (error: any) {
+//     throw new Error(error.response?.data?.message || 'Failed to create assistant with file');
+//   }
+// };
+
+
+export const createThread = async (astId: string, threadTitle: string) => {
   const token = localStorage.getItem('access_token');
   if (!token) {
     throw new Error('Access token not found');
@@ -199,7 +272,7 @@ export const getThreadHistoryById = async (threadId: string) => {
   if (!token) {
     throw new Error('Access token not found');
   }
-  
+
   try {
     const response = await api.get(`/threads/get-thread-history/${threadId}`, {
       headers: {
@@ -213,6 +286,7 @@ export const getThreadHistoryById = async (threadId: string) => {
   }
 };
 
+// Upload Assistant
 export const updateAssistant = async (
   astId: string,
   astName: string,
@@ -224,6 +298,7 @@ export const updateAssistant = async (
   if (!token) {
     throw new Error('Access token not found');
   }
+  console.log(astId, astName, astInstruction, gptModel, astTools);
 
   try {
     const response = await api.put('/assistant/update-assistant', {
@@ -243,3 +318,37 @@ export const updateAssistant = async (
     throw new Error(error.response?.data?.message || 'Failed to update assistant');
   }
 };
+
+// Upload Files
+export const uploadAssistantFiles = async (astId: string, files: File[]) => {
+  const formData = new FormData();
+
+  files.forEach(file => {
+    formData.append('files', file);
+  });
+
+  try {
+    const response = await axios.post(`/assistant/upload-assistant-files/${astId}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    console.log('Upload successful:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error uploading files:', error);
+    throw error;
+  }
+};
+
+
+
+
+
+
+
+
+
+
+

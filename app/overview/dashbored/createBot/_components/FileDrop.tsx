@@ -9,6 +9,7 @@ interface FileDropProps {
 const FileDrop: React.FC<FileDropProps> = ({ onFilesAdded }) => {
     const onDrop = (acceptedFiles: File[]) => {
         onFilesAdded(acceptedFiles);
+        console.log(acceptedFiles)
     };
 
     const { getRootProps, getInputProps } = useDropzone({ onDrop });

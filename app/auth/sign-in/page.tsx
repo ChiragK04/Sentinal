@@ -10,7 +10,7 @@ export default function SignIn() {
   useEffect(() => {
     const accessToken = localStorage.getItem("access_token");
     if (accessToken) {
-      router.push("/overview");
+      router.push("/overview/dashbored/bots");
     }
   }, [router]);
 

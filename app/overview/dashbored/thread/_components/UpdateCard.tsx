@@ -1,4 +1,3 @@
-// AssistantForm.tsx
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,49 +14,56 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select"; 
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"; 
-import { createAssistant, createAssistantWithFile } from "@/lib/api";
-import DropzoneCard from "../../create_bot/_components/FileDrop";
+import { Checkbox } from "@/components/ui/checkbox"; // Import Checkbox
+import { updateAssistant } from "@/lib/api";
+import DropzoneCard from "../../createBot/_components/FileDrop";
 import { CardContent } from "@/components/ui/card";
+
+interface Assistant {
+  astId: string;
+  astName: string;
+  astInstruction: string;
+  gptModel: string;
+  astFiles: { fileId: string; fileName: string; fileSize: number; fileType: string }[];
+  astTools: string[];
+  createdAt: string;
+  updatedAt: string;
+}
 
 const requestSchema = z.object({
   astName: z.string().nonempty({ message: "Name is required" }),
   astInstruction: z.string().nonempty({ message: "Instruction is required" }),
   gptModel: z.string().nonempty({ message: "GPT Model is required" }),
   files: z.array(z.any()).optional(),
-  astTools: z.string().nonempty({ message: "At least one tool is required" }),
+  astTools: z.array(z.string()).min(1, { message: "At least one tool is required" }),
 });
 
 interface RequestFormProps {
-  onRequestSuccess: (data: any) => void; // Consider defining a more specific type
+  onRequestSuccess: (data: any) => void;
+  assistant: Assistant;
 }
 
-const AssistantForm = ({ onRequestSuccess }: RequestFormProps) => {
+const AssistantForm = ({ onRequestSuccess, assistant }: RequestFormProps) => {
   const requestForm = useForm({
     resolver: zodResolver(requestSchema),
     defaultValues: {
-      astName: "",
-      astInstruction: "",
-      gptModel: "gpt-4o-mini", 
+      astId: assistant.astId, 
+      astName: assistant.astName || "",
+      astInstruction: assistant.astInstruction || "",
+      gptModel: "gpt-4o-mini",
       files: [],
-      astTools: "code_interpreter",
+      astTools: assistant.astTools, 
     },
   });
 
-  const handleFilesAdded = (acceptedFiles: File[]) => {
-  };
-
   const handleRequest: SubmitHandler<any> = async (data) => {
     console.log("Submitted Data:", data);
-    
+
     try {
-      const result = data.files && data.files.length > 0 
-        ? await createAssistantWithFile(data.astName, data.astInstruction, data.gptModel, [data.astTools], data.files)
-        : await createAssistant(data.astName, data.astInstruction, data.gptModel, [data.astTools]);
-      
-      console.log("Assistant created:", result);
+      const result = await updateAssistant(assistant.astId, data.astName, data.astInstruction, data.gptModel, data.astTools);
+      console.log("Assistant updated:", result);
       toast.success("Success!", {
         description: "Your request has been processed successfully.",
       });
@@ -67,11 +73,14 @@ const AssistantForm = ({ onRequestSuccess }: RequestFormProps) => {
     }
   };
 
+  function handleFilesAdded(files: File[]): void {
+    throw new Error("Function not implemented.");
+  }
+
   return (
     <CardContent className="">
       <Form {...requestForm}>
         <form onSubmit={requestForm.handleSubmit(handleRequest)} className="grid gap-4">
-          {/* Name Field */}
           <FormField
             control={requestForm.control}
             name="astName"
@@ -83,7 +92,7 @@ const AssistantForm = ({ onRequestSuccess }: RequestFormProps) => {
                 </div>
                 <div className="flex-1 p-2 pr-20">
                   <FormControl>
-                    <Input {...field} placeholder="Your Assistant's Name" />
+                    <Input {...field} placeholder={assistant.astName} />
                   </FormControl>
                   <FormMessage />
                 </div>
@@ -92,7 +101,6 @@ const AssistantForm = ({ onRequestSuccess }: RequestFormProps) => {
           />
           <hr className="px-4" />
 
-          {/* Instructions Field */}
           <FormField
             control={requestForm.control}
             name="astInstruction"
@@ -104,7 +112,7 @@ const AssistantForm = ({ onRequestSuccess }: RequestFormProps) => {
                 </div>
                 <div className="flex-1 p-2 pr-20">
                   <FormControl>
-                    <Input {...field} placeholder="Provide your instructions here" />
+                    <Input {...field} placeholder={assistant.astInstruction} />
                   </FormControl>
                   <FormMessage />
                 </div>
@@ -113,7 +121,6 @@ const AssistantForm = ({ onRequestSuccess }: RequestFormProps) => {
           />
           <hr className="px-4" />
 
-          {/* GPT Model Field */}
           <FormField
             control={requestForm.control}
             name="gptModel"
@@ -127,7 +134,7 @@ const AssistantForm = ({ onRequestSuccess }: RequestFormProps) => {
                   <FormControl>
                     <Select value={field.value} onValueChange={field.onChange}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a GPT model" />
+                        <SelectValue placeholder={assistant.gptModel} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="gpt-4o">gpt-4o</SelectItem>
@@ -142,7 +149,6 @@ const AssistantForm = ({ onRequestSuccess }: RequestFormProps) => {
           />
           <hr className="px-4" />
 
-          {/* Files Field */}
           <FormItem className="flex flex-row justify-between items-center">
             <div className="flex-1 p-2">
               <FormLabel>Files</FormLabel>
@@ -157,7 +163,6 @@ const AssistantForm = ({ onRequestSuccess }: RequestFormProps) => {
           </FormItem>
           <hr className="px-4" />
 
-          {/* Tools Field */}
           <FormField
             control={requestForm.control}
             name="astTools"
@@ -165,20 +170,36 @@ const AssistantForm = ({ onRequestSuccess }: RequestFormProps) => {
               <FormItem className="flex flex-row justify-between items-center">
                 <div className="flex-1 p-2">
                   <FormLabel>Tools</FormLabel>
-                  <FormDescription>Select one of the tools available for the assistant.</FormDescription>
+                  <FormDescription>Select one or more tools available for the assistant.</FormDescription>
                 </div>
                 <div className="flex-1 p-2 pr-20">
                   <FormControl>
-                    <RadioGroup value={field.value} onValueChange={field.onChange}>
+                    <div className="space-y-2">
                       <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="code_interpreter" />
+                        <Checkbox
+                          checked={field.value.includes("code_interpreter")}
+                          onCheckedChange={(checked) => {
+                            const newTools = checked
+                              ? [...field.value, "code_interpreter"]
+                              : field.value.filter((tool) => tool !== "code_interpreter");
+                            field.onChange(newTools);
+                          }}
+                        />
                         <label>Code Interpreter</label>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="file_search" />
+                        <Checkbox
+                          checked={field.value.includes("file_search")}
+                          onCheckedChange={(checked) => {
+                            const newTools = checked
+                              ? [...field.value, "file_search"]
+                              : field.value.filter((tool) => tool !== "file_search");
+                            field.onChange(newTools);
+                          }}
+                        />
                         <label>File Search</label>
                       </div>
-                    </RadioGroup>
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </div>
@@ -187,14 +208,13 @@ const AssistantForm = ({ onRequestSuccess }: RequestFormProps) => {
           />
           <hr className="px-4" />
 
-          {/* Submit Button */}
           <Button type="submit" className="mt-4 rounded-xl">
-            Start Bot Setup
+            Update The Bot
           </Button>
         </form>
       </Form>
     </CardContent>
   );
-}
+};
 
 export default AssistantForm;

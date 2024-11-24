@@ -38,6 +38,7 @@ export default function AssistantThreads(): JSX.Element {
     const handleGetThreadHistory = async (threadId: string) => {
         try {
             const response = await getThreadHistoryById(threadId);
+            console.log(response)
             setThreadHistory(response.data || []);
         } catch (error) {
             console.error('Error fetching thread history:', error);
@@ -57,12 +58,12 @@ export default function AssistantThreads(): JSX.Element {
 
     return (
         <div className="flex flex-row-reverse justify-between h-full w-full">
-            <Card className="hover:shadow-md transition-shadow duration-150 basis-2/5">
-                <CardHeader>
+            <Card className="hover:shadow-md transition-shadow duration-150 basis-2/5 h-full flex-grow flex flex-col">
+                <CardHeader className=' w-full'>
                     <AssistantHeader assistantName={assistantName} assistantId={assistantId} />
                     <hr />
                 </CardHeader>
-                <CardContent>
+                <CardContent className=' w-full flex-grow overflow-hidden'>
                     <ThreadsList threads={threads} onThreadClick={handleGetThreadHistory} />
                 </CardContent>
             </Card>
@@ -78,7 +79,7 @@ export default function AssistantThreads(): JSX.Element {
                         <MessageInput value={threadTitle} onChange={setThreadTitle} onSend={handleSendMessage} />
                     </CardContent>
                     <CardFooter className='w-full flex items-center justify-center text-sm bg-gray-50 gap-2'>
-                        <PoweredBy />
+                        <PoweredBy /> 
                     </CardFooter>
                 </Card>
             </div>

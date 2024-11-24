@@ -6,6 +6,7 @@ import { TooltipProvider } from "@radix-ui/react-tooltip";
 import { HeaderProvider } from "@/context/HeaderContext";
 import { useAuthRedirect } from "@/context/useAuthRedirect";
 import { ThreadProvider } from "@/context/ThreadContext";
+import { ThemeProvider } from "next-themes";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,16 +18,23 @@ export default function RootLayout({
   useAuthRedirect();
 
   return (
-    <html lang="en">
-      <body>
-        <HeaderProvider>
-          <ThreadProvider>
-            <TooltipProvider>
-              {children}
-            </TooltipProvider>
-            <Toaster />
-          </ThreadProvider>
-        </HeaderProvider>
+    <html lang="en" suppressHydrationWarning={true}>
+      <body >
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <HeaderProvider>
+            <ThreadProvider>
+              <TooltipProvider>
+                {children}
+              </TooltipProvider>
+              <Toaster />
+            </ThreadProvider>
+          </HeaderProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

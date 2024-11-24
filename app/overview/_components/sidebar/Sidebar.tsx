@@ -1,4 +1,5 @@
-import React from 'react';
+'use client'
+import React, { useEffect, useState } from 'react';
 import { useHeaderContext } from '@/context/HeaderContext';
 import { HomeIcon, BotIcon, BoxIcon, SettingsIcon, MessageCircleQuestionIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -9,7 +10,13 @@ import NavItem from './_components/NavItem';
 
 const Sidebar = () => {
   const router = useRouter();
+  const [userName, setUserName] = useState(''); 
   const { selectedItem, setSelectedItem, setSelectedMenu } = useHeaderContext();
+
+  useEffect(() => {
+      const storedUserEmail = localStorage.getItem('user_email');
+      setUserName(storedUserEmail || 'user_name');  
+  }, []);  
 
   const handleNavigation = (item: string, route: string, menu: string) => {
     setSelectedItem(item);
@@ -23,10 +30,10 @@ const Sidebar = () => {
         <LogoSection />
 
         <div className="flex-grow flex flex-col gap-2 my-4">
-          <NavItem label="Dashbored" icon={HomeIcon} selectedItem={selectedItem} onClick={() => handleNavigation('Dashbored', '/overview/dashbored', 'Bots')} />
+          <NavItem label="Dashbored" icon={HomeIcon} selectedItem={selectedItem} onClick={() => handleNavigation('Dashbored', '/overview', 'Bots')} />
           <NavItem label="ChatBots" icon={BotIcon} selectedItem={selectedItem} onClick={() => handleNavigation('ChatBots', '/overview/dashbored/bots', 'Bots')} />
           <NavItem label="Api" icon={BoxIcon} selectedItem={selectedItem} onClick={() => handleNavigation('Api', '/overview/api', '')} />
-          <NavItem label="Settings" icon={SettingsIcon} selectedItem={selectedItem} onClick={() => handleNavigation('Settings', '/overview/settings', '')} />
+          <NavItem label="Settings" icon={SettingsIcon} selectedItem={selectedItem} onClick={() => handleNavigation('Settings', '/overview/dashbored/settings', '')} />
           <NavItem label="Help & Support" icon={MessageCircleQuestionIcon} selectedItem={selectedItem} onClick={() => handleNavigation('Help & Support', '/overview/help', '')} />
         </div>
 
@@ -35,7 +42,7 @@ const Sidebar = () => {
         </div>
 
         <div className="flex items-center justify-between gap-2">
-          <UserAvatar userName="User_name" avatarSrc="https://github.com/shadcn.png" />
+          <UserAvatar userName={userName} avatarSrc="https://github.com/shadcn.png" />
           <LogoutButton />
         </div>
       </div>
