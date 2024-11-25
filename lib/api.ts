@@ -344,11 +344,50 @@ export const uploadAssistantFiles = async (astId: string, files: File[]) => {
 
 
 
+export const integrateChannelsAPI = async (astName: string, apiToken: string) => {
+  const token = localStorage.getItem('access_token');
+  if (!token) {
+    throw new Error('Access token not found');
+  }
+  try {
+    const response = await api.post(
+      `/channel/channels-api-integration?astName=${encodeURIComponent(astName)}&apiToken=${encodeURIComponent(apiToken)}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json',
+        },
+      }
+    );
+    console.log('API Response:', response.data);
+    return response.data;
+  } catch (error: any) {
+    console.error('API Error Response:', error.response?.data || error.message);
+    throw new Error(error.response?.data?.message || 'Channels API integration failed');
+  }
+};
 
-
-
-
-
-
-
-
+export const getAstInfo = async (ast_ID: string) => {
+  const token = localStorage.getItem('access_token');
+  if (!token) {
+    throw new Error('Access token not found');
+  }
+  try {
+    const response = await api.post(
+      `/channel/channels-ast-info`, 
+      null, 
+      {
+        params: { ast_ID },
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'accept': 'application/json',
+        },
+      }
+    );
+    console.log(response);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Failed to get AST info');
+  }
+};

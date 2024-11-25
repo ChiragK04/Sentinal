@@ -13,8 +13,8 @@ const UserAvatar = ({ userName, avatarSrc }: UserAvatarProps) => {
         <AvatarFallback>{userName[0]}</AvatarFallback>
       </Avatar>
       <div>
-        <h1 className="text-xs font-semibold text-primary-foreground max-w-32 truncate">{userName}</h1>
-        <p className="text-xs text-muted">Welcome back!</p>
+        <h1 className="text-xs font-semibold text-card-foreground max-w-32 truncate">{userName}</h1>
+        <p className="text-xs text-muted-foreground">Welcome back!</p>
       </div>
     </div>
   );

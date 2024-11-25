@@ -7,6 +7,7 @@ import { HeaderProvider } from "@/context/HeaderContext";
 import { useAuthRedirect } from "@/context/useAuthRedirect";
 import { ThreadProvider } from "@/context/ThreadContext";
 import { ThemeProvider } from "next-themes";
+import { AstProvider } from "@/context/AstContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,12 +28,14 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <HeaderProvider>
-            <ThreadProvider>
-              <TooltipProvider>
-                {children}
-              </TooltipProvider>
-              <Toaster />
-            </ThreadProvider>
+            <AstProvider>
+              <ThreadProvider>
+                <TooltipProvider>
+                  {children}
+                </TooltipProvider>
+                <Toaster />
+              </ThreadProvider>
+            </AstProvider>
           </HeaderProvider>
         </ThemeProvider>
       </body>

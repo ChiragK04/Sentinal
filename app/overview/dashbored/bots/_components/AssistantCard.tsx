@@ -7,7 +7,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
@@ -39,7 +38,7 @@ export default function AssistantCard({ assistant, onClick }: Props) {
   return (
     <Card
       key={assistant.astId}
-      className="hover:shadow-md transition-shadow duration-150 cursor-pointer"
+      className="hover:shadow-md transition-shadow duration-150 cursor-pointer bg-card text-card-foreground"
       onClick={() => onClick(assistant.astId)}
     >
       <CardHeader>
@@ -47,8 +46,8 @@ export default function AssistantCard({ assistant, onClick }: Props) {
           <div className="flex items-center gap-2">
             <UserCircle2Icon size={32} strokeWidth={1.4} className="text-primary" />
             <div>
-              <h2 className="text-base font-semibold text-gray-800 leading-none">{assistant.astName}</h2>
-              <p className="text-xs text-gray-600 leading-none">{assistant.astId}</p>
+              <h2 className="text-base font-semibold leading-none">{assistant.astName}</h2>
+              <p className="text-xs leading-none text-muted-foreground">{assistant.astId}</p>
             </div>
           </div>
           <div className="flex items-center justify-center">
@@ -63,7 +62,7 @@ export default function AssistantCard({ assistant, onClick }: Props) {
                   asChild
                   onClick={(e) => {
                     e.stopPropagation();
-                    updateThread(); 
+                    updateThread();
                   }}
                 >
                   <Link href={`/overview/dashbored/chats/${assistant.astId}/${assistant.astName}`}>
@@ -74,7 +73,7 @@ export default function AssistantCard({ assistant, onClick }: Props) {
                   asChild
                   onClick={(e) => {
                     e.stopPropagation();
-                    updateThread(); 
+                    updateThread();
                   }}
                 >
                   <Link href={`/overview/dashbored/monitors/${assistant.astId}`}>
@@ -87,12 +86,15 @@ export default function AssistantCard({ assistant, onClick }: Props) {
         </div>
       </CardHeader>
       <CardContent>
-        <hr className="my-1" />
-        <p className="text-xs text-gray-700 mb-1">Tools Used</p>
+        <hr className="my-1 border-muted" />
+        <p className="text-xs mb-1">Tools Used</p>
         <div className="flex gap-2 py-1">
           {assistant.astTools.length > 0 ? (
             assistant.astTools.map((tool) => (
-              <p key={tool} className="text-xs text-muted-foreground bg-muted p-1 rounded-sm">
+              <p
+                key={tool}
+                className="text-xs text-muted-foreground bg-muted p-1 rounded-sm"
+              >
                 {tool}
               </p>
             ))
@@ -100,12 +102,15 @@ export default function AssistantCard({ assistant, onClick }: Props) {
             <p className="text-xs text-muted-foreground bg-muted p-1 rounded-sm">No tools</p>
           )}
         </div>
-        <hr className="my-1" />
-        <p className="text-xs text-gray-700 mb-1">Docs Used</p>
+        <hr className="my-1 border-muted" />
+        <p className="text-xs mb-1">Docs Used</p>
         <div className="flex gap-2 py-1">
           {assistant?.astFiles?.length > 0 ? (
             assistant.astFiles.map((file) => (
-              <p key={file} className="text-xs text-muted-foreground bg-muted p-1 rounded-sm">
+              <p
+                key={file}
+                className="text-xs text-muted-foreground bg-muted p-1 rounded-sm"
+              >
                 {file}
               </p>
             ))
@@ -113,7 +118,7 @@ export default function AssistantCard({ assistant, onClick }: Props) {
             <p className="text-xs text-muted-foreground bg-muted p-1 rounded-sm">No files</p>
           )}
         </div>
-        <p className="text-xs text-gray-500 text-right">
+        <p className="text-xs text-right">
           <strong>Updated:</strong> {new Date(assistant.updatedAt).toLocaleString()}
         </p>
       </CardContent>

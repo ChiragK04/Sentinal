@@ -25,21 +25,18 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="min-w-[16rem] h-full bg-primary text-primary-foreground p-4">
+    <div className="min-w-[16rem] h-full --secondary  --secondary-foreground p-4">
       <div className="p-2 flex flex-col justify-between h-full">
         <LogoSection />
 
         <div className="flex-grow flex flex-col gap-2 my-4">
           <NavItem label="Dashbored" icon={HomeIcon} selectedItem={selectedItem} onClick={() => handleNavigation('Dashbored', '/overview', 'Bots')} />
           <NavItem label="ChatBots" icon={BotIcon} selectedItem={selectedItem} onClick={() => handleNavigation('ChatBots', '/overview/dashbored/bots', 'Bots')} />
-          <NavItem label="Api" icon={BoxIcon} selectedItem={selectedItem} onClick={() => handleNavigation('Api', '/overview/api', '')} />
+          <NavItem label="Api" icon={BoxIcon} selectedItem={selectedItem} onClick={() => handleNavigation('Api', '/overview/dashbored/api', '')} />
           <NavItem label="Settings" icon={SettingsIcon} selectedItem={selectedItem} onClick={() => handleNavigation('Settings', '/overview/dashbored/settings', '')} />
           <NavItem label="Help & Support" icon={MessageCircleQuestionIcon} selectedItem={selectedItem} onClick={() => handleNavigation('Help & Support', '/overview/help', '')} />
         </div>
-
-        <div className="w-full my-4">
-          <hr className="border-primary-foreground border" />
-        </div>
+        <hr className="border-secondary-foreground border my-4" />
 
         <div className="flex items-center justify-between gap-2">
           <UserAvatar userName={userName} avatarSrc="https://github.com/shadcn.png" />

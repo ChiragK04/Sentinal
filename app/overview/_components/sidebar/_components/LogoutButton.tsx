@@ -15,7 +15,7 @@ const LogoutButton = () => {
       className="cursor-pointer flex gap-1 items-center"
       onClick={handleLogout}
     >
-      <LogOut className="text-primary-foreground" />
+      <LogOut className="text-card-foreground" />
     </div>
   );
 };

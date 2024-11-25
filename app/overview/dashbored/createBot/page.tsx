@@ -84,12 +84,13 @@ export default function RequestForm({ onRequestSuccess }: RequestFormProps) {
 
   return (
     <Card className="">
-      <CardHeader className="p-4 bg-gray-100">
+      <CardHeader className="p-4 bg-card rounded-lg">
         <div className="flex flex-row items-center gap-2 rounded-lg">
           <ActivitySquareIcon strokeWidth={1.4} className="text-green-600" />
-          <p className="text-base mt-0 font-medium">Active Bot Setup</p>
+          <p className="text-base mt-0 font-medium text-card-foreground">Active Bot Setup</p>
         </div>
       </CardHeader>
+      <hr className="px-4" />
       <CardContent className="py-6 px-12">
         <Form {...requestForm}>
           <form onSubmit={requestForm.handleSubmit(handleRequest)} className="grid gap-4">

@@ -58,7 +58,7 @@ function Page() {
 
   const handleAssistantClick = (astId: string) => {
     router.push(`/overview/dashbored/thread/${astId}`);
-    console.log(astId)
+    // console.log(astId)
   };
 
   return (

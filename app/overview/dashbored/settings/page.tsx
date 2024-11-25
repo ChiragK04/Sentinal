@@ -5,19 +5,20 @@ import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { useHeaderContext } from '@/context/HeaderContext';
 import { Button, CardContent } from '@mui/material';
+import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 
 type Props = {};
 
 const Page = (props: Props) => {
     const { setSelectedItem, setSelectedMenu } = useHeaderContext();
-    const [userName, setUserName] = useState(''); 
-  
+    const [userName, setUserName] = useState('');
+
     useEffect(() => {
         const storedUserEmail = localStorage.getItem('user_email');
-        setUserName(storedUserEmail || 'user_name');  
-    }, []);  
-  
+        setUserName(storedUserEmail || 'user_name');
+    }, []);
+
     useEffect(() => {
         setSelectedItem("Settings");
         setSelectedMenu("General");
@@ -43,9 +44,11 @@ const Page = (props: Props) => {
                             <div className="space-y-1">
                                 <div className="flex items-center gap-4">
                                     <p className="font-medium text-sm w-[14%]">Password:</p>
-                                    <Badge className="px-2 rounded-full text-xs cursor-pointer">
-                                        Change Password
-                                    </Badge>
+                                    <Link href={'/auth/reset-password'}>
+                                        <Badge className="px-2 rounded-full text-xs cursor-pointer">
+                                            Change Password
+                                        </Badge>
+                                    </Link>
                                 </div>
                             </div>
                         </div>

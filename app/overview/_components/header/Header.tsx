@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/navigation-menu';
 import { useRouter } from 'next/navigation';
 import { useThreadContext } from '@/context/ThreadContext';
+import { Link, Settings } from 'lucide-react';
 
 type DashboredProps = {
   selectedItem: string;
@@ -64,7 +65,22 @@ const Header = ({ selectedItem, selectedMenu }: DashboredProps) => {
           <NavigationMenuList className="flex space-x-24">
             <NavigationMenuItem className="cursor-pointer">
               <NavigationMenuLink href="/overview/dashbored/bots" className={activeClass('General')}>
-                General
+                <div className="flex gap-1 items-center">
+                  <Settings className='h-4 w-4' /> General Settings
+                </div>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        );
+
+      case 'Api':
+        return (
+          <NavigationMenuList className="flex space-x-24">
+            <NavigationMenuItem className="cursor-pointer">
+              <NavigationMenuLink href="/overview/dashbored/api" className={activeClass('Api')}>
+                <div className="flex gap-1 items-center">
+                  <Link className='h-4 w-4' /> Api Connections
+                </div>
               </NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>
