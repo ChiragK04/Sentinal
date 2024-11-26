@@ -65,17 +65,26 @@ export default function RequestForm({ onRequestSuccess }: RequestFormProps) {
     try {
       if (data.files && data.files.length > 0) {
         console.log("Creating assistant with files:", data);
-        const result = await createAssistantWithFile(data.astName, data.astInstruction, data.gptModel, data.astTools, data.files);
+        const result = await createAssistantWithFile({
+          astName: data.astName,
+          astInstruction: data.astInstruction,
+          gptModel: data.gptModel,
+          astTools: data.astTools,
+          files: data.files,
+        });
         console.log(result)
       } else {
         console.log("Creating assistant without files");
         const result = await createAssistant(data.astName, data.astInstruction, data.gptModel, data.astTools);
         console.log(result)
       }
+      requestForm.reset();
 
+      setAddedFiles([]);
       toast.success("Success!", {
         description: "Your request has been processed successfully.",
       });
+
     } catch (error: any) {
       console.error("Error during API request:", error);
       toast.error(error.message || 'Failed to process request');

@@ -7,7 +7,7 @@ export const useAuthRedirect = () => {
 
   useEffect(() => {
     const accessToken = localStorage.getItem("access_token");
-    const allowedRoutes = ["/auth/reset-password"];
+    const allowedRoutes = ["/auth/reset-password", "/auth/sign-up"];
     if (!accessToken && !allowedRoutes.includes(pathname)) {
       router.push("/auth/sign-in");
     }

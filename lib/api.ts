@@ -126,78 +126,47 @@ export const createAssistant = async (astName: string, astInstruction: string, g
 };
 
 // Create Assistant with file upload
+interface CreateAssistantWithFileParams {
+  astName: string;
+  astInstruction: string;
+  gptModel: string;
+  files: File[];
+  astTools: string[];
+}
 
-export const createAssistantWithFile = async (
-  astName: string,
-  astInstruction: string,
-  gptModel: string,
-  astTools: string[],
-  files: File[]
-) => {
-  const formData = new FormData();
-  const url = `/assistant/create-assistant-with-file?astName=${encodeURIComponent(astName)}&astInstruction=${encodeURIComponent(astInstruction)}&gptModel=${encodeURIComponent(gptModel)}`;
-
+export const createAssistantWithFile = async (params: CreateAssistantWithFileParams) => {
+  const { astName, astInstruction, gptModel, files, astTools } = params;
   const token = localStorage.getItem('access_token');
-  if (!token) {
-    throw new Error('Access token not found');
-  }
+  const formData = new FormData();
 
   files.forEach((file) => {
-    formData.append('files', file);
+    formData.append("files", file);
   });
 
-  formData.append('astTools', JSON.stringify(astTools));
+  astTools.forEach((tool) => {
+    formData.append("astTools", tool);
+  });
 
   try {
-    const response = await api.post(url, formData, {
-      headers: {
-        'Authorization': `Bearer ${token}`, 
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-    
+    const response = await api.post(
+      `/assistant/create-assistant-with-file?astName=${encodeURIComponent(
+        astName
+      )}&astInstruction=${encodeURIComponent(astInstruction)}&gptModel=${encodeURIComponent(gptModel)}`,
+      formData,
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
 
-    console.log('Assistant created successfully:', response.data);
     return response.data;
   } catch (error) {
-    console.error('Error creating assistant:', error);
+    console.error("Error creating assistant with file:", error);
     throw error;
   }
 };
-
-// export const createAssistantWithFile = async (astName: string, astInstruction: string, gptModel: string, astTools: string[], files: File[]) => {
-//   const token = localStorage.getItem('access_token');
-//   if (!token) {
-//     throw new Error('Access token not found');
-//   }
-
-//   const formData = new FormData();
-//   formData.append('astName', astName);
-//   formData.append('astInstruction', astInstruction);
-//   formData.append('gptModel', gptModel);
-
-//   astTools.forEach((tool, index) => {
-//     formData.append(`astTools[${index}]`, tool);
-//   });
-
-//   files.forEach((file, index) => {
-//     formData.append(`files[${index}]`, file);
-//   });
-//   console.log(formData);
-
-//   try {
-//     const response = await api.post('/assistant/create-assistant-with-file', formData, {
-//       headers: {
-//         'Authorization': `Bearer ${token}`,
-//         'Content-Type': 'multipart/form-data',
-//       },
-//     });
-//     return response.data;
-//   } catch (error: any) {
-//     throw new Error(error.response?.data?.message || 'Failed to create assistant with file');
-//   }
-// };
-
 
 export const createThread = async (astId: string, threadTitle: string) => {
   const token = localStorage.getItem('access_token');
@@ -375,8 +344,8 @@ export const getAstInfo = async (ast_ID: string) => {
   }
   try {
     const response = await api.post(
-      `/channel/channels-ast-info`, 
-      null, 
+      `/channel/channels-ast-info`,
+      null,
       {
         params: { ast_ID },
         headers: {

@@ -3,11 +3,13 @@
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { getAssistantById, createThread, createChat } from '@/lib/api';
-import { Card, CardContent, CardHeader, CardFooter } from '@/components/ui/card';
-import { ArrowBigRightDashIcon, CircleDotDashedIcon, Loader, SendHorizontalIcon, UserCircle2Icon } from 'lucide-react';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Loader, SendHorizontalIcon, UserCircle2Icon } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import AssistantForm from '../_components/UpdateCard';
+import ReactMarkdown from 'react-markdown';
+
 
 interface Assistant {
   astId: string;
@@ -159,7 +161,7 @@ export default function AssistantDetailPage() {
                   key={index}
                   className={`p-2 rounded-lg ${msg.sender === 'user' ? 'bg-blue-100 self-end' : 'bg-gray-200 self-start'}`}
                 >
-                  {msg.text}
+                  <ReactMarkdown>{msg.text}</ReactMarkdown>
                 </div>
               ))}
 

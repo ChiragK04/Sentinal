@@ -21,12 +21,17 @@ export default function SignInCard() {
                 <CardContent>
                     <SignInForm />
                 </CardContent>
-
                 <div className="text-center my-4 flex flex-col items-center gap-1">
                     <p className="text-sm text-gray-500 leading-none">Don't have an account?</p>
-                    <Link href="/auth/sign-up" className="text-blue-600 text-sm no-underline hover:underline">
-                        Create an account
-                    </Link>
+                    <div className="flex items-center gap-1">
+                        <Link href="/auth/sign-up" className="text-primary text-sm no-underline hover:underline">
+                            Create an account
+                        </Link>
+                        <p className="text-sm">or</p>
+                        <Link href="/auth/reset-password" className="text-blue-600 text-sm no-underline hover:underline">
+                            Forgot password?
+                        </Link>
+                    </div>
                 </div>
 
             </Card>
